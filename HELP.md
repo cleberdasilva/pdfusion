@@ -1,28 +1,121 @@
-# Getting Started
+# PDFusion — Build & Run Guide
 
-### Reference Documentation
-For further reference, please consider the following sections:
+A local web application to merge multiple PDF files into one, with a drag-and-drop interface.
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/4.0.7/maven-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/4.0.7/maven-plugin/build-image.html)
-* [Spring Web](https://docs.spring.io/spring-boot/4.0.7/reference/web/servlet.html)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/4.0.7/reference/using/devtools.html)
-* [Thymeleaf](https://docs.spring.io/spring-boot/4.0.7/reference/web/servlet.html#web.servlet.spring-mvc.template-engines)
-* [PDF Document Reader](https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html#_pdf_page)
+---
 
-### Guides
-The following guides illustrate how to use some features concretely:
+## Prerequisites
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
-* [Handling Form Submission](https://spring.io/guides/gs/handling-form-submission/)
+Make sure the following tools are installed on your machine before proceeding:
 
-### Maven Parent overrides
+| Tool | Version | Download |
+|------|---------|----------|
+| **Java (JDK)** | 25 or higher | https://adoptium.net |
+| **Git** | Any recent version | https://git-scm.com |
 
-Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
-To prevent this, the project POM contains empty overrides for these elements.
-If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
+> Maven does **not** need to be installed separately — the project includes the **Maven Wrapper** (`mvnw` / `mvnw.cmd`), which downloads the correct Maven version automatically on the first run.
+
+---
+
+## Clone the Repository
+
+```bash
+git clone https://github.com/<your-username>/pdfusion.git
+cd pdfusion
+```
+
+---
+
+## Run the Application
+
+### On Windows
+
+```cmd
+.\mvnw.cmd spring-boot:run
+```
+
+### On Linux / macOS
+
+```bash
+./mvnw spring-boot:run
+```
+
+The first run will download all Maven dependencies automatically (internet connection required). This may take a minute or two.
+
+Once started, you will see a log line like:
+
+```
+Started PdfusionApplication in X.XXX seconds
+```
+
+Open your browser and go to:
+
+```
+http://localhost:8080
+```
+
+---
+
+## Build a Runnable JAR (optional)
+
+To package the application into a single executable JAR:
+
+### On Windows
+
+```cmd
+.\mvnw.cmd package -DskipTests
+```
+
+### On Linux / macOS
+
+```bash
+./mvnw package -DskipTests
+```
+
+The JAR will be generated at:
+
+```
+target/pdfusion-0.0.1.jar
+```
+
+Run it with:
+
+```bash
+java -jar target/pdfusion-0.0.1.jar
+```
+
+Then access the app at `http://localhost:8080` as usual.
+
+---
+
+## How to Use
+
+1. Open `http://localhost:8080` in your browser.
+2. Drag and drop your PDF files onto the upload area, or click **Browse Files**.
+3. Reorder the files by dragging rows up or down — the merge follows the top-to-bottom order.
+4. Remove any unwanted file by clicking the **✕** button on its row.
+5. Click **Merge PDFs** to combine the files.
+6. The merged PDF (`merged.pdf`) will download automatically.
+
+---
+
+## Configuration
+
+The following properties can be adjusted in `src/main/resources/application.properties`:
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `server.port` | `8080` | HTTP port the application listens on |
+| `spring.servlet.multipart.max-file-size` | `100MB` | Maximum size per uploaded file |
+| `spring.servlet.multipart.max-request-size` | `500MB` | Maximum total upload size per request |
+
+---
+
+## Tech Stack
+
+- **Java 25**
+- **Spring Boot 4.0.7** (Spring MVC + Thymeleaf)
+- **Apache PDFBox 3.x** — PDF merging
+- **SortableJS** — drag-and-drop list reordering (loaded from CDN)
+- **Lombok** — boilerplate reduction
 
