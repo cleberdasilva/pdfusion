@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDFusion — PDF Merger</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/pdfusion-favicon.ico}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -13,7 +14,7 @@
     <!-- Header -->
     <header class="app-header">
         <div class="app-header__logo">
-            <span class="app-header__icon">⬡</span>
+            <img th:src="@{/pdfusion-256.png}" alt="PDFusion logo" class="app-header__img">
             <span class="app-header__title">PDFusion</span>
         </div>
         <p class="app-header__subtitle">Merge multiple PDF files into one — quickly and securely, all on your machine.</p>

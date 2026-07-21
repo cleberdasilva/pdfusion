@@ -68,9 +68,11 @@ body {
     margin-bottom: .5rem;
 }
 
-.app-header__icon {
-    font-size: 2rem;
-    color: var(--color-primary);
+.app-header__img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+    display: block;
 }
 
 .app-header__title {
