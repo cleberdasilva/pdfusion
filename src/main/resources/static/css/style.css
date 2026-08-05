@@ -358,6 +358,47 @@ body {
     background: #fff5f5;
 }
 
+/* ---------- File List Options ---------- */
+.file-list-section__options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .875rem 1.5rem;
+    background: #f8fafc;
+    border-top: 1px solid var(--color-border);
+}
+
+.file-list-section__label {
+    font-size: .875rem;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+}
+
+.file-list-section__input-wrapper {
+    flex: 1;
+    max-width: 280px;
+}
+
+.file-list-section__input {
+    width: 100%;
+    padding: .45rem .75rem;
+    font-size: .875rem;
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.file-list-section__input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(79, 126, 248, .15);
+}
+
 /* ---------- File List Actions ---------- */
 .file-list-section__actions {
     display: flex;

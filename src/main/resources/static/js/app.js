@@ -21,6 +21,7 @@ const fileListEl     = document.getElementById('file-list');
 const fileCountBadge = document.getElementById('file-count');
 const clearBtn       = document.getElementById('clear-btn');
 const mergeBtn       = document.getElementById('merge-btn');
+const outputFilenameInput = document.getElementById('output-filename');
 const errorBanner    = document.getElementById('error-banner');
 const errorMessage   = document.getElementById('error-message');
 const loadingOverlay = document.getElementById('loading-overlay');
@@ -206,6 +207,32 @@ async function mergePdfs() {
         return;
     }
 
+    // Determine target output filename from input box
+    let filename = (outputFilenameInput ? outputFilenameInput.value.trim() : '') || 'merged.pdf';
+    if (!filename.toLowerCase().endsWith('.pdf')) {
+        filename += '.pdf';
+    }
+
+    // Allow user to select target folder and filename via native OS dialog if supported
+    let fileHandle = null;
+    if ('showSaveFilePicker' in window) {
+        try {
+            fileHandle = await window.showSaveFilePicker({
+                suggestedName: filename,
+                types: [{
+                    description: 'PDF Document',
+                    accept: { 'application/pdf': ['.pdf'] }
+                }]
+            });
+        } catch (err) {
+            // If the user cancelled the dialog, abort the merge operation
+            if (err.name === 'AbortError') {
+                return;
+            }
+            console.warn('File save picker failed or was dismissed, falling back to browser download:', err);
+        }
+    }
+
     const formData = new FormData();
     orderedEntries.forEach((entry) => {
         formData.append('files', entry.file, entry.file.name);
@@ -230,20 +257,28 @@ async function mergePdfs() {
             return;
         }
 
-        // Trigger file download
         const blob = await response.blob();
-        const url  = URL.createObjectURL(blob);
-        const a    = document.createElement('a');
-        a.href     = url;
-        a.download = 'merged.pdf';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
+
+        if (fileHandle) {
+            // Save directly to the user-selected folder/file path
+            const writable = await fileHandle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+        } else {
+            // Fallback download for browsers without showSaveFilePicker
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href     = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
 
     } catch (err) {
         console.error('Merge request failed:', err);
-        showError('Could not connect to the server. Please make sure the application is running and try again.');
+        showError('Could not connect to the server or save file. Please try again.');
     } finally {
         showLoading(false);
     }
